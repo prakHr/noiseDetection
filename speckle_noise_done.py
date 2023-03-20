@@ -2,7 +2,7 @@ import numpy as np
 import cv2
 
 def speckle_noise(img_path, threshold=1.5):
-    image = cv2.imread(img_path)
+    image = cv2.imread(img_path,0)
 
     # Calculate the mean and standard deviation of the image
     mean, std = np.mean(image), np.std(image)
