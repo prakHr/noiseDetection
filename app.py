@@ -9,6 +9,7 @@ from poisson_noise_done import poisson_noise
 from rayleigh_noise_done import rayleigh_noise
 from speckle_noise_done import speckle_noise
 from uniform_noise_done import uniform_noise
+from saltandpepper_noise_done import saltandpepper_noise
 from dash_canvas import DashCanvas
 from dash_canvas.utils import array_to_data_url, parse_jsonstring
 import numpy as np
@@ -55,6 +56,13 @@ def update_output(image_path):
 
     children=[]
     if image_path!=None and os.path.exists(image_path):
+        children+=[html.Br(),'salt and pepper Noise',html.Br()]
+        saltandpepper_noise_imgs = saltandpepper_noise(image_path)   
+        number_of_white_pix = [np.sum(img == 255) for img in saltandpepper_noise_imgs]
+        img_srces = [array_to_data_url((saltandpepper_noise_img).astype(np.uint8)) for saltandpepper_noise_img in saltandpepper_noise_imgs]
+        my_list = get_pixelated_components(img_srces,number_of_white_pix)
+        children+=my_list
+
         children+=[html.Br(),'erlang Noise',html.Br()]
         erlang_noise_imgs = erlang_noise(image_path)   
         number_of_white_pix = [np.sum(img == 255) for img in erlang_noise_imgs]
