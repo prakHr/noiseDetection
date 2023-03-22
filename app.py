@@ -12,6 +12,7 @@ from uniform_noise_done import uniform_noise
 from dash_canvas import DashCanvas
 from dash_canvas.utils import array_to_data_url, parse_jsonstring
 import numpy as np
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = Dash(__name__, external_stylesheets=external_stylesheets)
@@ -28,6 +29,17 @@ app.layout = html.Div(
               Input('image_path','value'))
 def update_output(image_path):
     def get_pixelated_components(img_srces,number_of_white_pix):
+        img_srces_new,number_of_white_pix_new = [],[]
+        minima = pow(10,64)-1
+        for i,pix in enumerate(number_of_white_pix):
+            if pix>0:
+                minima = min(minima,pix)
+        for i,pix in enumerate(number_of_white_pix):
+            if pix==minima:
+                img_srces_new.append(img_srces[i])
+                number_of_white_pix_new.append(number_of_white_pix[i])
+                break
+        img_srces,number_of_white_pix=img_srces_new,number_of_white_pix_new
         rv  = [
         html.Div(
             [
@@ -49,6 +61,7 @@ def update_output(image_path):
         img_srces = [array_to_data_url((erlang_noise_img).astype(np.uint8)) for erlang_noise_img in erlang_noise_imgs]
         my_list = get_pixelated_components(img_srces,number_of_white_pix)
         children+=my_list
+
         children+=[html.Br(),'exponential Noise',html.Br()]
         exponential_noise_imgs = exponential_noise(image_path)    
         number_of_white_pix = [np.sum(img == 255) for img in exponential_noise_imgs]
@@ -59,7 +72,7 @@ def update_output(image_path):
         children+=[html.Br(),'gaussian Noise',html.Br()]
         gaussian_noise_imgs = gaussian_noise(image_path)    
         number_of_white_pix = [np.sum(img == 255) for img in gaussian_noise_imgs]
-        img_srces = [array_to_data_url((gaussian_noise_img).astype(np.uint8)) for gaussian_noise_img in exponential_noise_imgs]
+        img_srces = [array_to_data_url((gaussian_noise_img).astype(np.uint8)) for gaussian_noise_img in gaussian_noise_imgs]
         my_list = get_pixelated_components(img_srces,number_of_white_pix)
         
         children+=my_list
