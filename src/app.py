@@ -16,13 +16,15 @@ from lognormal_noise_done import lognormal_noise
 from dash_canvas import DashCanvas
 from dash_canvas.utils import array_to_data_url, parse_jsonstring, image_string_to_PILImage
 import numpy as np
-import socketio
+from flask_socketio import SocketIO, emit
+
 
 from dash import Dash, page_container, dcc, clientside_callback, ClientsideFunction, Output, Input
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app =  Dash(__name__, external_stylesheets=external_stylesheets)
+socketio = SocketIO(app)
 
 app.layout = html.Div(
 
