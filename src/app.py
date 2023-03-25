@@ -159,6 +159,6 @@ def update_output(image_path,names,dates):
 
         
 
-server = app.server
-# if __name__ == '__main__':
-    # app.run_server(debug=True,host = '0.0.0.0')
+# server = app.server
+if __name__ == '__main__':
+    app.run_server(debug=True,host = '0.0.0.0')
