@@ -23,7 +23,7 @@ import numpy as np
 #cv2.imwrite('output_image.png', img_with_noise)
 
 
-def erlang_noise(img_path):
+def erlang_noise(img):
     # import numpy as np
     # import scipy
     # from scipy.signal import cwt
@@ -145,7 +145,7 @@ def erlang_noise(img_path):
 
     scales = np.arange(1, 10)
     # img = cv2.imread(img_path,0)
-    img = img_path.copy()
+    # img = img_path.copy()
     # print(img.shape)
     # cwtmatr, freqs = sig.cwt2d(image, erlang2d_wavelet, scales, theta=5, scale=2)
     cwtmatr, freqs = cwt_2d(img,scales,'erlang',theta=5, scale=2)

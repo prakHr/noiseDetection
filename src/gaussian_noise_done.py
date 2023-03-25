@@ -219,7 +219,7 @@ import numpy as np
 #cv2.imwrite('output_image.png', img_with_noise)
 
 
-def gaussian_noise(img_path):
+def gaussian_noise(img):
     
     from skimage.io import imread
     import matplotlib.pyplot as plt
@@ -300,7 +300,7 @@ def gaussian_noise(img_path):
 
     scales = np.arange(1, 10)
     # img = cv2.imread(img_path,0)
-    img = img_path.copy()
+    # img = img_path.copy()
     cwtmatr, freqs = cwt_2d(img,scales,'gaussian')
     cwt_result = np.abs(cwtmatr)
 

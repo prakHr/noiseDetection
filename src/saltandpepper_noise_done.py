@@ -41,13 +41,13 @@ denoised_img = cv2.fastNlMeansDenoisingColored(img, None, 10, 10, 7, 21)
 cv2.imwrite('denoised_image.jpg', denoised_img)
 
 '''
-def saltandpepper_noise(img_path):
+def saltandpepper_noise(img):
 	import cv2
 	import numpy as np
 	import pywt
 
 	# img = cv2.imread(img_path, 0)
-	img = img_path.copy()
+	# img = img_path.copy()
 	def cwt(image):
 	    coeffs2 = pywt.dwt2(image, 'haar')
 	    LL, (LH, HL, HH) = coeffs2
