@@ -1,5 +1,7 @@
 import datetime
 import os
+import dash
+import cv2
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output, State
 from erlang_noise_done import erlang_noise
@@ -11,7 +13,7 @@ from speckle_noise_done import speckle_noise
 from uniform_noise_done import uniform_noise
 from saltandpepper_noise_done import saltandpepper_noise
 from dash_canvas import DashCanvas
-from dash_canvas.utils import array_to_data_url, parse_jsonstring
+from dash_canvas.utils import array_to_data_url, parse_jsonstring, image_string_to_PILImage
 import numpy as np
 
 
@@ -25,14 +27,35 @@ app.layout = html.Div(
 
 
     [
-        html.Div('Enter image path '),
-        dcc.Input(id = 'image_path'),
+        html.Div('Upload image'),
+        dcc.Upload(
+        id='image_path',
+        children=html.Div([
+            'Drag and Drop or ',
+            html.A('Select Files')
+        ]),
+        style={
+            'width': '100%',
+            'height': '60px',
+            'lineHeight': '60px',
+            'borderWidth': '1px',
+            'borderStyle': 'dashed',
+            'borderRadius': '5px',
+            'textAlign': 'center',
+            'margin': '10px'
+        },
+        # Allow multiple files to be uploaded
+        multiple=False
+    ),
         html.Div(id='output-image-upload'),
     ]
 )
 
-@app.callback(Output('output-image-upload', 'children'),Input('image_path','value'))
-def update_output(image_path):
+@app.callback(Output('output-image-upload', 'children'),
+    Input('image_path', 'contents'),
+    State('image_path', 'filename'),
+    State('image_path', 'last_modified'))
+def update_output(image_path,names,dates):
     def get_pixelated_components(img_srces,number_of_white_pix):
         img_srces_new,number_of_white_pix_new = [],[]
         minima = pow(10,64)-1
@@ -58,7 +81,14 @@ def update_output(image_path):
         return rv
 
     children=[]
-    if image_path!=None and os.path.exists(image_path):
+    if image_path is None:
+            raise dash.exceptions.PreventUpdate
+
+    else:   
+            img = image_string_to_PILImage(image_path)
+            pix = np.array(img)
+            image_path = r"tmp_img.jpg"
+            cv2.imwrite(image_path,pix)
             children+=[html.Br(),'salt and pepper Noise',html.Br()]
             saltandpepper_noise_imgs = saltandpepper_noise(image_path)   
             number_of_white_pix = [np.sum(img == 255) for img in saltandpepper_noise_imgs]
@@ -114,7 +144,7 @@ def update_output(image_path):
             img_srces = [array_to_data_url((uniform_noise_img).astype(np.uint8)) for uniform_noise_img in uniform_noise_imgs]
             my_list = get_pixelated_components(img_srces,number_of_white_pix)
             children+=my_list
-
+            os.remove(image_path)
 
     return children
 
