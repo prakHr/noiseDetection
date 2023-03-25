@@ -134,7 +134,7 @@ class MainApplication:
         return self.__app
 
 
-# Application = MainApplication()
-# app = Application.app.server
+Application = MainApplication()
+server = Application.app.server
 # if __name__ == '__main__':
 #     app.run_server(debug=True)
