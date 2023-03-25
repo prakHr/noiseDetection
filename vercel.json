@@ -11,7 +11,8 @@
         {
             "src": "(.*)",
             "dest": "app/index.py",
-            "memory": 3008,
+            
+            
         }
     ]
 }
