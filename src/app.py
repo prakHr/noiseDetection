@@ -16,7 +16,7 @@ from lognormal_noise_done import lognormal_noise
 from dash_canvas import DashCanvas
 from dash_canvas.utils import array_to_data_url, parse_jsonstring, image_string_to_PILImage
 import numpy as np
-
+import socketio
 
 from dash import Dash, page_container, dcc, clientside_callback, ClientsideFunction, Output, Input
 
@@ -161,4 +161,5 @@ def update_output(image_path,names,dates):
 
 # server = app.server
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    # app.run_server(debug=True)
+    socketio.run(app)
