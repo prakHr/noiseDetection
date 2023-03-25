@@ -3,13 +3,15 @@
     "builds": [
         {
             "src": "app/index.py",
-            "use": "@vercel/python"
+            "use": "@vercel/python",
+            "memory": 3008,
         }
     ],
     "routes": [
         {
             "src": "(.*)",
-            "dest": "app/index.py"
+            "dest": "app/index.py",
+            "memory": 3008,
         }
     ]
 }
