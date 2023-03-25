@@ -299,7 +299,8 @@ def gaussian_noise(img_path):
     
 
     scales = np.arange(1, 10)
-    img = cv2.imread(img_path,0)
+    # img = cv2.imread(img_path,0)
+    img = img_path.copy()
     cwtmatr, freqs = cwt_2d(img,scales,'gaussian')
     cwt_result = np.abs(cwtmatr)
 

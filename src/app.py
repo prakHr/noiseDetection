@@ -12,6 +12,7 @@ from rayleigh_noise_done import rayleigh_noise
 from speckle_noise_done import speckle_noise
 from uniform_noise_done import uniform_noise
 from saltandpepper_noise_done import saltandpepper_noise
+from lognormal_noise_done import lognormal_noise
 from dash_canvas import DashCanvas
 from dash_canvas.utils import array_to_data_url, parse_jsonstring, image_string_to_PILImage
 import numpy as np
@@ -86,9 +87,17 @@ def update_output(image_path,names,dates):
 
     else:   
             img = image_string_to_PILImage(image_path)
-            pix = np.array(img)
-            image_path = r"tmp_img.jpg"
-            cv2.imwrite(image_path,pix)
+            float_arr = np.array(img)
+            uint_img = np.array(float_arr*255).astype('uint8')
+            image_path = cv2.cvtColor(uint_img, cv2.COLOR_RGB2GRAY)
+
+            children+=[html.Br(),'lognormal Noise',html.Br()]
+            lognormal_noise_imgs = lognormal_noise(image_path)   
+            number_of_white_pix = [np.sum(img == 255) for img in lognormal_noise_imgs]
+            img_srces = [array_to_data_url((lognormal_noise_img).astype(np.uint8)) for lognormal_noise_img in lognormal_noise_imgs]
+            my_list = get_pixelated_components(img_srces,number_of_white_pix)
+            children+=my_list
+
             children+=[html.Br(),'salt and pepper Noise',html.Br()]
             saltandpepper_noise_imgs = saltandpepper_noise(image_path)   
             number_of_white_pix = [np.sum(img == 255) for img in saltandpepper_noise_imgs]
@@ -144,7 +153,7 @@ def update_output(image_path,names,dates):
             img_srces = [array_to_data_url((uniform_noise_img).astype(np.uint8)) for uniform_noise_img in uniform_noise_imgs]
             my_list = get_pixelated_components(img_srces,number_of_white_pix)
             children+=my_list
-            os.remove(image_path)
+            
 
     return children
 

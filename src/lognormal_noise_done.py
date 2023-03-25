@@ -90,10 +90,10 @@ def lognormal_noise(img_path):
     from functools import lru_cache
 
     
-    def lognormal2d_wavelet(omega_x, omega_y, sigma):
+    def lognormal2d_wavelet(omega_x, omega_y, sigma,smoothing_parameter = 0.001):
         # x, y = np.meshgrid(np.arange(-shape // 2, shape // 2 + 1), np.arange(-shape // 2, shape // 2 + 1))
         r = np.sqrt(omega_x ** 2 + omega_y ** 2)
-        return (1 / (sigma ** 2 * r ** 2)) * np.exp(-(np.log(r / sigma) ** 2) / 2)
+        return (1 / ((sigma+smoothing_parameter) ** 2 * (r+smoothing_parameter) ** 2)) * np.exp(-(np.log((r+smoothing_parameter) / (sigma+smoothing_parameter)) ** 2) / 2)
     wavelets = {}
     wavelets['lognormal'] = lognormal2d_wavelet
 
@@ -145,7 +145,8 @@ def lognormal_noise(img_path):
     
 
     scales = np.arange(1, 10)
-    img = cv2.imread(img_path,0)
+    # img = cv2.imread(img_path,0)
+    img = img_path.copy()
     # print(img.shape)
     # cwtmatr, freqs = sig.cwt2d(image, erlang2d_wavelet, scales, theta=5, scale=2)
     cwtmatr, freqs = cwt_2d(img,scales,'lognormal',sigma=1)
@@ -159,23 +160,24 @@ def lognormal_noise(img_path):
     # Now we can threshold the CWT result to identify the noisy pixels
     noisy_pixels_orig = cwt_result > threshold
     # print(noisy_pixels.shape)
+    img_with_noises=[]
     for i in range(9):
-	    noisy_pixels = noisy_pixels_orig[:img.shape[0],:img.shape[1],i]
-	    # The 'noisy_pixels' array will be a boolean array, with 'True'
-	    # values indicating the presence of noisy pixels in the image
-	    # img = cv2.imread(img_path,1)
-	    img_with_noise = np.zeros(img.shape)
-	    img_with_noise[noisy_pixels] = 255
-
-	    cv2.imwrite(f'img_with_noise-{i}.jpg',img_with_noise)
-	    # print("reached here!")
+        noisy_pixels = noisy_pixels_orig[:img.shape[0],:img.shape[1],i]
+        # The 'noisy_pixels' array will be a boolean array, with 'True'
+        # values indicating the presence of noisy pixels in the image
+        # img = cv2.imread(img_path,1)
+        img_with_noise = np.zeros(img.shape)
+        img_with_noise[noisy_pixels] = 255
+        img_with_noises.append(img_with_noise)
+        # cv2.imwrite(f'img_with_noise-{i}.jpg',img_with_noise)
+        # print("reached here!")
     # return img_with_noise
     # return cwtmatr
-    return
+    return img_with_noises
     # return cwtmatr
 # img_path = r"C:\Users\gprak\Downloads\Github Repos\watermark.png"
 # img_path = r"C:\Users\gprak\Downloads\Research Papers\dog\images.jpg"
 # img_path = r"C:\Users\gprak\Downloads\Research Papers\label_poisoned_dataset - Copy\aadhar\Aadhaar_letter_large.png"
-img_path = r"C:\Users\gprak\Downloads\Research Papers\lognormal_Noise\Screenshot 2023-03-19 230102.png"
-lognormal_noise(img_path)
+# img_path = r"C:\Users\gprak\Downloads\Research Papers\lognormal_Noise\Screenshot 2023-03-19 230102.png"
+# lognormal_noise(img_path)
 # cv2.imwrite('img_with_noise.jpg',img_with_noise)
