@@ -4,7 +4,7 @@
         {
             "src": "app/index.py",
             "use": "@vercel/python",
-            "memory": 3008,
+            
         }
     ],
     "routes": [
