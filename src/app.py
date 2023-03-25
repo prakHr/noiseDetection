@@ -164,7 +164,7 @@ def update_output(image_path,names,dates,selected_noise):
                 my_list = get_pixelated_components(img_srces,number_of_white_pix)
                     
                 children+=my_list
-            if selected_noise == 'luniform_noise':
+            if selected_noise == 'uniform_noise':
                 children+=[html.Br(),'uniform_noise',html.Br()]
                 uniform_noise_imgs = uniform_noise(image_path)    
                 number_of_white_pix = [np.sum(img == 255) for img in uniform_noise_imgs]
