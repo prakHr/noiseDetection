@@ -30,6 +30,7 @@ app.layout = html.Div(
 
 
     [
+        html.Div('Please upload images upto 10kb by compressing them so not to face any upload size limit issues while using dash core components for the same...'),
         html.Div('Upload image'),
         dcc.Upload(
         id='image_path',
@@ -89,7 +90,7 @@ def update_output(image_path,names,dates,selected_noise):
             
         return rv
 
-    children=['Please upload images upto 10kb by compressing them so not to face any upload size limit issues while using dash core components for the same...']
+    children=[]
     if image_path is None:
             raise dash.exceptions.PreventUpdate
 
