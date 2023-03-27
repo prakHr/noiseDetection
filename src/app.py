@@ -89,7 +89,7 @@ def update_output(image_path,names,dates,selected_noise):
             
         return rv
 
-    children=[]
+    children=['Please upload images upto 10kb by compressing them so not to face any upload size limit issues while using dash core components for the same...']
     if image_path is None:
             raise dash.exceptions.PreventUpdate
 
