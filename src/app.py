@@ -53,7 +53,7 @@ app.layout = html.Div(
     ),
     dcc.Dropdown(['lognormal Noise', 'salt and pepper Noise', 'erlang Noise',
             'exponential Noise','gaussian Noise','poisson Noise',
-            'rayleigh Noise','speckle_noise','uniform_noise'], 
+            'rayleigh Noise','speckle Noise','uniform Noise'], 
             'lognormal Noise', id='demo-dropdown'),
         html.Div(id='output-image-upload'),
 
@@ -100,78 +100,28 @@ def update_output(image_path,names,dates,selected_noise):
             float_arr = np.array(img)
             uint_img = np.array(float_arr*255).astype('uint8')
             image_path = cv2.cvtColor(uint_img, cv2.COLOR_RGB2GRAY)
-            if selected_noise == 'lognormal Noise':
-                children+=[html.Br(),'lognormal Noise',html.Br()]
-                lognormal_noise_imgs = lognormal_noise(image_path)   
-                number_of_white_pix = [np.sum(img == 255) for img in lognormal_noise_imgs]
-                img_srces = [array_to_data_url((lognormal_noise_img).astype(np.uint8)) for lognormal_noise_img in lognormal_noise_imgs]
-                my_list = get_pixelated_components(img_srces,number_of_white_pix)
-                children+=my_list
-            if selected_noise == 'salt and pepper Noise':
-
-                children+=[html.Br(),'salt and pepper Noise',html.Br()]
-                saltandpepper_noise_imgs = saltandpepper_noise(image_path)   
-                number_of_white_pix = [np.sum(img == 255) for img in saltandpepper_noise_imgs]
-                img_srces = [array_to_data_url((saltandpepper_noise_img).astype(np.uint8)) for saltandpepper_noise_img in saltandpepper_noise_imgs]
-                my_list = get_pixelated_components(img_srces,number_of_white_pix)
-                children+=my_list
-
-            if selected_noise == 'erlang Noise':    
-
-                children+=[html.Br(),'erlang Noise',html.Br()]
-                erlang_noise_imgs = erlang_noise(image_path)   
-                number_of_white_pix = [np.sum(img == 255) for img in erlang_noise_imgs]
-                img_srces = [array_to_data_url((erlang_noise_img).astype(np.uint8)) for erlang_noise_img in erlang_noise_imgs]
-                my_list = get_pixelated_components(img_srces,number_of_white_pix)
-                children+=my_list
+            noise_dict = {
+                'lognormal Noise':'lognormal_noise(image_path)',
+                'salt and pepper Noise':'saltandpepper_noise(image_path)',
+                'exponential Noise':'exponential_noise(image_path)',
+                'gaussian Noise':'gaussian_noise(image_path)',
+                'poisson Noise':'poisson_noise(image_path)',
+                'rayleigh Noise':'rayleigh_noise(image_path)',
+                'speckle Noise':'speckle_noise(image_path)',
+                'uniform Noise':'uniform_noise(image_path)'
 
 
-            if selected_noise == 'exponential Noise':
-                children+=[html.Br(),'exponential Noise',html.Br()]
-                exponential_noise_imgs = exponential_noise(image_path)    
-                number_of_white_pix = [np.sum(img == 255) for img in exponential_noise_imgs]
-                img_srces = [array_to_data_url((exponential_noise_img).astype(np.uint8)) for exponential_noise_img in exponential_noise_imgs]
-                my_list = get_pixelated_components(img_srces,number_of_white_pix)
-                children+=my_list
-            if selected_noise == 'gaussian Noise':
-                children+=[html.Br(),'gaussian Noise',html.Br()]
-                gaussian_noise_imgs = gaussian_noise(image_path)    
-                number_of_white_pix = [np.sum(img == 255) for img in gaussian_noise_imgs]
-                img_srces = [array_to_data_url((gaussian_noise_img).astype(np.uint8)) for gaussian_noise_img in gaussian_noise_imgs]
-                my_list = get_pixelated_components(img_srces,number_of_white_pix)
-                    
-                children+=my_list
-            if selected_noise == 'poisson Noise':
-                children+=[html.Br(),'poisson Noise',html.Br()]
-                poisson_noise_imgs = poisson_noise(image_path)    
-                number_of_white_pix = [np.sum(img == 255) for img in poisson_noise_imgs]
-                img_srces = [array_to_data_url((poisson_noise_img).astype(np.uint8)) for poisson_noise_img in poisson_noise_imgs]
-                my_list = get_pixelated_components(img_srces,number_of_white_pix)
-                    
-                children+=my_list
-            if selected_noise == 'rayleigh Noise':
-                children+=[html.Br(),'rayleigh Noise',html.Br()]
-                rayleigh_noise_imgs = rayleigh_noise(image_path)  
-                number_of_white_pix = [np.sum(img == 255) for img in rayleigh_noise_imgs]
-                img_srces = [array_to_data_url((rayleigh_noise_img).astype(np.uint8)) for rayleigh_noise_img in rayleigh_noise_imgs]
-                my_list = get_pixelated_components(img_srces,number_of_white_pix)
-                    
-                children+=my_list
-            if selected_noise == 'speckle_noise':
-                children+=[html.Br(),'speckle_noise',html.Br()]
-                speckle_noise_imgs = speckle_noise(image_path)    
-                number_of_white_pix = [np.sum(img == 255) for img in speckle_noise_imgs]
-                img_srces = [array_to_data_url((speckle_noise_img).astype(np.uint8)) for speckle_noise_img in speckle_noise_imgs]
-                my_list = get_pixelated_components(img_srces,number_of_white_pix)
-                    
-                children+=my_list
-            if selected_noise == 'uniform_noise':
-                children+=[html.Br(),'uniform_noise',html.Br()]
-                uniform_noise_imgs = uniform_noise(image_path)    
-                number_of_white_pix = [np.sum(img == 255) for img in uniform_noise_imgs]
-                img_srces = [array_to_data_url((uniform_noise_img).astype(np.uint8)) for uniform_noise_img in uniform_noise_imgs]
-                my_list = get_pixelated_components(img_srces,number_of_white_pix)
-                children+=my_list
+
+            }
+            for k,v in noise_dict.items():
+                if selected_noise == k:
+
+                    children+=[html.Br(),k,html.Br()]
+                    lognormal_noise_imgs = eval(v)   
+                    number_of_white_pix = [np.sum(img == 255) for img in lognormal_noise_imgs]
+                    img_srces = [array_to_data_url((lognormal_noise_img).astype(np.uint8)) for lognormal_noise_img in lognormal_noise_imgs]
+                    my_list = get_pixelated_components(img_srces,number_of_white_pix)
+                    children+=my_list
             
 
     return children
